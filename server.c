@@ -53,17 +53,23 @@ int main() {
         if (p < 0) {
             perror("Fork Fail\n");
             exit(1);
-        } else if (p == 0) {
+        } else if (p == 0) { //Subserver
             int to_client;
             server_handshake_half(&to_client, from_client);
-            char buff[100];
-            while (read(from_client, buff, sizeof(buff)) > 0) {
-                printf("%s\n", buff);
-            }
-            printf("Client lost\n");
-            close(to_client);
-            close(from_client);
-            exit(0);
+            while (1) {
+                int out;
+                out = 1;
+                write(to_client, &out, sizeof(out));
+                int in;
+                if (read(from_client, &in, sizeof(in)) <= 0) {
+                    printf("Client lost\n");
+                    close(to_client);
+                    close(from_client);
+                    exit(0);
+                }
+                printf("%d\n", in);
+                sleep(1);
+            }  
         } else {
             close(from_client);
         }

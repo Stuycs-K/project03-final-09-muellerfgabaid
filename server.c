@@ -57,17 +57,17 @@ int main() {
             int to_client;
             server_handshake_half(&to_client, from_client);
             while (1) {
-                int out;
-                out = 1;
+                char out[100];
+                strcpy(out, "TURN|0");
                 write(to_client, &out, sizeof(out));
-                int in;
+                /*int in;
                 if (read(from_client, &in, sizeof(in)) <= 0) {
                     printf("Client lost\n");
                     close(to_client);
                     close(from_client);
                     exit(0);
                 }
-                printf("%d\n", in);
+                printf("%d\n", in);*/
                 sleep(1);
             }  
         } else {

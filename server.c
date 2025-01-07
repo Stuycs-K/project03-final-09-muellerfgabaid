@@ -54,7 +54,6 @@ int main() {
             perror("Fork Fail\n");
             exit(1);
         } else if (p == 0) {
-            remove(WKP);
             int to_client;
             server_handshake_half(&to_client, from_client);
             char buff[100];

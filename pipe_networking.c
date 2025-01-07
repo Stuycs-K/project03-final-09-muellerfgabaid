@@ -96,6 +96,7 @@ int client_handshake(int *to_server) {
   *to_server = open(WKP, O_WRONLY);
   if (write(*to_server, pidPipe, sizeof(pidPipe)) == -1) {
     printf("SYN SEND FAIL\n");
+    remove(pidPipe);
     exit(1);
   } else {
     printf("[SYN SENT]: %d\n", pid);

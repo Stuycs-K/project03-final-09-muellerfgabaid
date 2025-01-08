@@ -2,15 +2,16 @@
 
 This document must be updated daily by EACH group member.
 
-## Player 1
+## Flint Mueller
 
-### 2024-01-02 - Brief description
-Expanded description including how much time was spent on task.
+### 2025-01-06 - Added project files
+Updated Makefile, README.md, and DEVLOG.md
 
-### 2024-01-03 - Brief description
-Expanded description including how much time was spent on task.
+### 2024-01-08 - Brief description
+Rename parseData.* to parse_data.*
+Create outline for protocol
 
-## Player 2
+## Daniel Gabai
 
 ### 2024-01-02 - Brief description
 Expanded description including how much time was spent on task.

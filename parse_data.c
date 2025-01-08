@@ -1,10 +1,6 @@
 #include "parse_data.h"
-#include "string.h"
 
-int parseServerResponse(char * msg, char * msg_type, char * data) {
-    char *curr = msg;
-    char * token;
-    token = strsep(&curr, "|");
-    strcpy(msg_type, token);
-    strcpy(data, curr);
+struct response parse_server_response(int *msg) {
+    struct response response;
+    return response;
 }

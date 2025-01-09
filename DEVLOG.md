@@ -7,9 +7,12 @@ This document must be updated daily by EACH group member.
 ### 2025-01-06 - Added project files
 Updated Makefile, README.md, and DEVLOG.md
 
-### 2024-01-08 - Brief description
+### 2024-01-08 - Game protocol
 Rename parseData.* to parse_data.*
 Create outline for protocol
+
+### 2024-01-09 - Subservers
+Create outline + branch for bracket subservers
 
 ## Daniel Gabai
 

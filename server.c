@@ -1,6 +1,7 @@
 #include "pipe_networking.h"
 #include <signal.h>
 #include <sys/wait.h>
+#include "parse_data.h"
 
 static void sighandler(int signo) {
     if (signo == SIGINT) {
@@ -49,6 +50,9 @@ int main() {
         int from_client = server_setup();
         printf("New Connection Made\n");
 
+        int fds[2];
+        pipe(fds);
+
         pid_t p = fork();
         if (p < 0) {
             perror("Fork Fail\n");
@@ -57,21 +61,12 @@ int main() {
             int to_client;
             server_handshake_half(&to_client, from_client);
             while (1) {
-                char out[100];
-                strcpy(out, "TURN|0");
-                write(to_client, &out, sizeof(out));
-                /*int in;
-                if (read(from_client, &in, sizeof(in)) <= 0) {
-                    printf("Client lost\n");
-                    close(to_client);
-                    close(from_client);
-                    exit(0);
-                }
-                printf("%d\n", in);*/
                 sleep(1);
             }  
-        } else {
+        } else { // Main Server
             close(from_client);
+            int out = USER_TURN;
+            write(fds[WRITE], out, sizeof(out));
         }
     }
 }

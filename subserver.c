@@ -1,6 +1,27 @@
 #include "subserver.h"
+#include <stdlib.h>
 #include <unistd.h>
 
 int fork_subserver(int **clients, int num_clients) {
+    int fds[2];
+    pipe(fds);
     int pid = fork();
+    if (pid == 0) {
+        if (num_clients == 1) {
+            write(fds[1], clients[0], 2 * sizeof(int));
+        } else {
+            int subserver1 = fork_subserver(clients, num_clients / 2);
+            int subserver2 = fork_subserver(clients + num_clients / 2,
+                                            num_clients - num_clients / 2);
+            int player1[2];
+            int player2[2];
+            read(subserver1, player1, 2 * sizeof(int));
+            read(subserver2, player2, 2 * sizeof(int));
+            int winner[2];
+            // play game with player1 and player2
+            write(fds[1], winner, 2 * sizeof(int));
+        }
+        exit(EXIT_SUCCESS);
+    }
+    return fds[0];
 }

@@ -14,6 +14,10 @@ Create outline for protocol
 ### 2024-01-09 - Subservers
 Create outline + branch for bracket subservers
 
+### 2024-01-10 - Subservers
+Write fork_subserver function
+Still waiting for game implementation before merging
+
 ## Daniel Gabai
 
 ### 2024-01-02 - Brief description

@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 
+// TODO replace fds[0/1] with constants before merging
 int fork_subserver(int **clients, int num_clients) {
     int fds[2];
     pipe(fds);

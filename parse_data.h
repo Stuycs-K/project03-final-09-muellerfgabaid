@@ -6,19 +6,16 @@
 #define PAPER 1
 #define SCISSORS 2
 
-#define VALID 0
-#define INVALID 1
+#define VALID 3
+#define INVALID 4
 
-#define LOSE 0
-#define WIN 1
+#define LOSE 5
+#define WIN 6
 
-union data {
-    int choice;
-};
+#define USER_TURN 7
+#define OPP_TURN 8
 
-struct response {
-    int isValid;
-    union data data;
-};
+#define READ 0
+#define WRITE 1
 
 #endif

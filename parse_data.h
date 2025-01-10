@@ -11,11 +11,14 @@
 
 #define LOSE 5
 #define WIN 6
+#define TIE 10
 
 #define USER_TURN 7
 #define OPP_TURN 8
 
 #define READ 0
 #define WRITE 1
+
+
 
 #endif

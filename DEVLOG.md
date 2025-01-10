@@ -32,3 +32,8 @@ Changed logic into rock/paper/scissors (plan to change to battleship once server
 Worked on subserver / main server communication
 Updated parse_data.h for new game
 Total time: 1hr
+
+### 2025-01-10 - Server side logic for game
+Wrote functions to handle the logic for the game on the server
+Also communicates with clients
+Time: 40 mins

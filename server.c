@@ -50,23 +50,7 @@ int main() {
         int from_client = server_setup();
         printf("New Connection Made\n");
 
-        int fds[2];
-        pipe(fds);
-
-        pid_t p = fork();
-        if (p < 0) {
-            perror("Fork Fail\n");
-            exit(1);
-        } else if (p == 0) { //Subserver
-            int to_client;
-            server_handshake_half(&to_client, from_client);
-            while (1) {
-                sleep(1);
-            }  
-        } else { // Main Server
-            close(from_client);
-            int out = USER_TURN;
-            write(fds[WRITE], out, sizeof(out));
-        }
+        int to_client;
+        server_handshake_half(&to_client, from_client);
     }
 }

@@ -1,6 +1,7 @@
 #include "pipe_networking.h"
 #include <signal.h>
 #include <sys/wait.h>
+#include <unistd.h>
 #include "parse_data.h"
 
 static void sighandler(int signo) {
@@ -55,17 +56,25 @@ int main() {
     signal(SIGPIPE, SIG_IGN);
     signal(SIGINT, sighandler);
 
-    printf("Waiting for client...\n");
+    printf("Hit enter to start game\n");
 
     int **clients = malloc(10 * sizeof(int) * 2);
     int num_clients = 0;
-    int client_cap = 10;
+    int clients_max = 10;
 
     while (1) {
         int from_client = server_setup();
-        printf("New Connection Made\n");
+        printf("New player joined\n");
 
         int to_client;
         server_handshake_half(&to_client, from_client);
+
+        clients = add_client(clients, &num_clients, &clients_max, to_client, from_client);
+
+        char empty;
+        if (read(STDIN_FILENO, &empty, 1) > 0) {
+            printf("Done connecting clients\n");
+            break;
+        }
     }
 }

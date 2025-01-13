@@ -40,11 +40,26 @@ void server_handshake_half(int *to_client, int from_client) {
     }
 }
 
+int **add_client(int **clients, int *num_clients, int *clients_max, int to_client, int from_client) {
+    if (num_clients >= clients_max) {
+        *clients_max = *clients_max * 2 + 1;
+        clients = realloc(clients, *clients_max * 2 * sizeof(int));
+    }
+    *num_clients += 1;
+    clients[*num_clients][0] = from_client;
+    clients[*num_clients][1] = to_client;
+    return clients;
+}
+
 int main() {
     signal(SIGPIPE, SIG_IGN);
     signal(SIGINT, sighandler);
 
     printf("Waiting for client...\n");
+
+    int **clients = malloc(10 * sizeof(int) * 2);
+    int num_clients = 0;
+    int client_cap = 10;
 
     while (1) {
         int from_client = server_setup();

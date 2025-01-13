@@ -1,6 +1,7 @@
 #include "subserver.h"
 #include <stdlib.h>
 #include <unistd.h>
+#include "game.h"
 
 // TODO replace fds[0/1] with constants before merging
 int fork_subserver(int **clients, int num_clients) {
@@ -20,6 +21,7 @@ int fork_subserver(int **clients, int num_clients) {
             read(subserver2, player2, 2 * sizeof(int));
             int winner[2];
             // play game with player1 and player2
+            play_game(player1, player2, winner);
             write(fds[1], winner, 2 * sizeof(int));
         }
         exit(EXIT_SUCCESS);

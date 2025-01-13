@@ -17,7 +17,7 @@ int get_winner(int r1, int r2) { // Returns 0 for tie, 1 for client 1 win, 2 for
 	}
 }
 
-void play_game(int * client1, int * client2, int * result) {
+void play_game_server(int * client1, int * client2, int * result) {
 	send_to_client(client1, USER_TURN); // Tells client1 that it's its turn
 
 	send_to_client(client2, OPP_TURN); // Tells client2 that it is the opponent's turn
@@ -35,7 +35,7 @@ void play_game(int * client1, int * client2, int * result) {
 	if (outcome == 0) {
 		send_to_client(client1, TIE);
 		send_to_client(client2, TIE);
-		play_game(client1, client2, result);
+		play_game_server(client1, client2, result);
 	} else if (outcome == 1) {
 		send_to_client(client1, WIN);
 		send_to_client(client2, LOSE);
@@ -47,6 +47,44 @@ void play_game(int * client1, int * client2, int * result) {
 		result[0] = client2[0];
 		result[1] = client2[1];
 	}
+}
 
-	
+int get_user_turn() {
+	char buffer[50];
+	printf("Your Turn!\nEnter your move: (rock/paper/scissors)\n");
+	fgets(buffer, 49, stdin);
+	if (!strcmp(buffer, "rock") || !strcmp(buffer, "paper") || !strcmp(buffer, "scissors")) {
+		if (!strcmp(buffer, "rock")) {
+			return ROCK;
+		} else if (!strcmp(buffer, "paper")) {
+			return PAPER;
+		} else if (!strcmp(buffer, "scissors")) {
+			return SCISSORS;
+		}
+	} else {
+		printf("Invalid Input.\n");
+		return get_user_turn();
+	}
+}
+
+void play_game_client(int to_server, int from_server) {
+	int data;
+	read(from_server, &data, sizeof(data));
+
+	if (data == USER_TURN) {
+		int turn = get_user_turn();
+		write(to_server, &turn, sizeof(turn));
+		play_game_client(to_server, from_server);
+	} else if (data == OPP_TURN){
+		printf("Waiting for opponent...\n");
+		play_game_client(to_server, from_server);
+	} else if (data == (WIN | LOSE | TIE)) {
+		if (data == WIN) {
+			printf("You Win!\n");
+		} else if (data == LOSE) {
+			printf("You Lose.\n");
+		} else if (data == TIE) {
+			printf("You Tied...\n");
+		}
+	}
 }

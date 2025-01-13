@@ -1,31 +1,24 @@
 #ifndef PARSEDATA_H
 #define PARSEDATA_H
 
-// client message types
-#define C_MOVE 0
-#define C_PLACE 1
+// Rock - Paper - Scissors 
+#define ROCK 0
+#define PAPER 1
+#define SCISSORS 2
 
-// server message types
-#define S_GAME_OVER 0
-#define S_RESULT 1 // hit or miss
-#define S_OPP_MOVE 2
+#define VALID 3
+#define INVALID 4
 
-struct coord {
-    char x;
-    char y;
-};
+#define LOSE 5
+#define WIN 6
+#define TIE 10
 
-union data {
-    struct coord move;
-    struct coord place;
-    char result;
-    struct coord opp_move;
-};
+#define USER_TURN 7
+#define OPP_TURN 8
 
-struct response {
-    char type;
-    union data data;
-};
+#define READ 0
+#define WRITE 1
 
-struct response parse_server_response(int *msg);
+
+
 #endif

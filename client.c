@@ -1,5 +1,5 @@
 #include "pipe_networking.h"
-#include "parseData.h"
+#include "parse_data.h"
 
 int main() {
 
@@ -8,20 +8,22 @@ int main() {
 
   from_server = client_handshake( &to_server );
 
-  char in[100];
-  char msg_type[100];
-  char data[100];
-  int out = 1;
+  int in;
+  char input[100];
+  int out = 0;
   while (1) {
     read(from_server, &in, sizeof(in));
-    parseServerResponse(in, msg_type, data);
-    if (!strcmp(msg_type, "TURN")) {
-      if (!strcmp(data, "0")) {
-        printf("Your Turn\n");
-        //write(to_server, &out, sizeof(out));
-      } else {
-        printf("Enemy Turn\n");
-      }
+    if (in == WIN) {
+      printf("You Win!\n");
+      exit(0);
+    } else if (in == LOSE) {
+      printf("You Lost :(\n");
+      exit(0);
+    }
+    if (in == USER_TURN) {
+      getInput(from_server, to_server);
+    } else if (in == OPP_TURN) {
+      printf("Waiting for opponent...\n");
     }
     sleep(1);
   }

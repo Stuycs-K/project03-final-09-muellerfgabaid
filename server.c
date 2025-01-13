@@ -1,8 +1,8 @@
 #include "pipe_networking.h"
+#include "subserver.h"
 #include <signal.h>
 #include <sys/wait.h>
 #include <unistd.h>
-#include "parse_data.h"
 
 static void sighandler(int signo) {
     if (signo == SIGINT) {
@@ -23,7 +23,8 @@ void server_handshake_half(int *to_client, int from_client) {
     int syn_ack, ack;
     int rfile = open("/dev/urandom", O_RDONLY, 0);
     read(rfile, &syn_ack, sizeof(syn_ack));
-    if (syn_ack < 0) syn_ack *= -1;
+    if (syn_ack < 0)
+        syn_ack *= -1;
 
     if (write(*to_client, &syn_ack, sizeof(syn_ack)) == -1) {
         printf("SYN_ACK SEND FAIL\n");
@@ -41,7 +42,8 @@ void server_handshake_half(int *to_client, int from_client) {
     }
 }
 
-int **add_client(int **clients, int *num_clients, int *clients_max, int to_client, int from_client) {
+int **add_client(int **clients, int *num_clients, int *clients_max,
+                 int to_client, int from_client) {
     if (num_clients >= clients_max) {
         *clients_max = *clients_max * 2 + 1;
         clients = realloc(clients, *clients_max * 2 * sizeof(int));
@@ -69,7 +71,8 @@ int main() {
         int to_client;
         server_handshake_half(&to_client, from_client);
 
-        clients = add_client(clients, &num_clients, &clients_max, to_client, from_client);
+        clients = add_client(clients, &num_clients, &clients_max, to_client,
+                             from_client);
 
         char empty;
         if (read(STDIN_FILENO, &empty, 1) > 0) {
@@ -77,4 +80,9 @@ int main() {
             break;
         }
     }
+
+    int fd = fork_subserver(clients, num_clients);
+    int winner[2];
+    while (read(fd, winner, sizeof(int) * 2) < 1);
+    // the winner is ...
 }

@@ -54,3 +54,9 @@ Total time: 1hr
 Wrote functions to handle the logic for the game on the server
 Also communicates with clients
 Time: 40 mins
+
+### 2025-01-13 - Client side logic for game
+Wrote functions to handle game logic on the client
+Updated makefile for new targets
+Updated client to use the new code
+Time: 40 mins

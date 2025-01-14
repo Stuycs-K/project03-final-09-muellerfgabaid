@@ -3,6 +3,7 @@
 #include <signal.h>
 #include <sys/wait.h>
 #include <unistd.h>
+#include <fcntl.h>
 
 static void sighandler(int signo) {
     if (signo == SIGINT) {
@@ -58,6 +59,8 @@ int main() {
     signal(SIGPIPE, SIG_IGN);
     signal(SIGINT, sighandler);
 
+    fcntl(STDIN_FILENO, F_SETFL, fcntl(STDIN_FILENO, F_GETFL) | O_NONBLOCK);
+
     printf("Hit enter to start game\n");
 
     int **clients = malloc(10 * sizeof(int) * 2);
@@ -83,6 +86,6 @@ int main() {
 
     int fd = fork_subserver(clients, num_clients);
     int winner[2];
-    while (read(fd, winner, sizeof(int) * 2) < 1);
+    read(fd, winner, sizeof(int) * 2);
     // the winner is ...
 }

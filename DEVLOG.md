@@ -60,3 +60,9 @@ Wrote functions to handle game logic on the client
 Updated makefile for new targets
 Updated client to use the new code
 Time: 40 mins
+
+### 2025-01-14 - Created Testing Server and Bug Fixing
+Created a seperate testing server to test game functionality
+Updated makefile for this new server
+Fixed bugs in game.c 
+Time: 40 mins

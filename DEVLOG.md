@@ -22,9 +22,14 @@ Write fork_subserver function
 Still waiting for game implementation before merging
 40 minutes
 
-### 2024-01-11 - Merge subserver and link with game
+### 2024-01-13 - Merge subserver and link with game
 Merged subserver branch to main
 Helped Daniel get the code running
+40 minutes
+
+### 2024-01-14 - Started server testing
+Fixed some include bugs
+Started testing server and need to find a solution for reading
 40 minutes
 
 

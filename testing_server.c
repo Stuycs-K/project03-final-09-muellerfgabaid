@@ -45,30 +45,41 @@ int main() {
     signal(SIGINT, sighandler);
 
     printf("Waiting for client...\n");
-
+	int num = 0;
+	int * clients[2];
+	int res;
     while (1) {
         int from_client = server_setup();
         printf("New Connection Made\n");
-
-        int * clients[2];
-        int ind = 0;
-        
+		int to_client;
+		server_handshake_half(&to_client, from_client);
+        clients[num] = &to_client;
+        num++;
+        close(from_client);
+        if (num == 2) {
+        	play_game_server(clients[0], clients[1], &res);
+        	printf("%d\n", res);
+        }
+        /*
         pid_t p = fork();
         if (p < 0) {
             perror("Fork Fail\n");
             exit(1);
         } else if (p == 0) { //Subserver
             int to_client;
-            server_handshake_half(&to_client, from_client);
+            
             clients[ind] = &to_client;
             ind++;
+            exit(0);
         } else { // Main Server
             close(from_client);
+            printf("%d\n", ind);
             if (ind == 1) {
             	int res;
             	play_game_server(clients[0], clients[1], &res);
             	printf("%d\n", res);
             }
         }
+        */
     }
 }

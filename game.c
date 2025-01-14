@@ -54,14 +54,12 @@ int get_user_turn() {
 	char buffer[50];
 	printf("Your Turn!\nEnter your move: (rock/paper/scissors)\n");
 	fgets(buffer, 49, stdin);
-	if (!strcmp(buffer, "rock") || !strcmp(buffer, "paper") || !strcmp(buffer, "scissors")) {
-		if (!strcmp(buffer, "rock")) {
-			return ROCK;
-		} else if (!strcmp(buffer, "paper")) {
-			return PAPER;
-		} else if (!strcmp(buffer, "scissors")) {
-			return SCISSORS;
-		}
+	if (!strcmp(buffer, "rock")) {
+		return ROCK;
+	} else if (!strcmp(buffer, "paper")) {
+		return PAPER;
+	} else if (!strcmp(buffer, "scissors")) {
+		return SCISSORS;
 	} else {
 		printf("Invalid Input.\n");
 		return get_user_turn();

@@ -4,7 +4,7 @@ compile: client.o server.o pipe_networking.o parse_data.o game.o subserver.o
 	@gcc -o server server.o pipe_networking.o parse_data.o game.o subserver.o
 client.o: client.c pipe_networking.h parse_data.h
 	@gcc -c client.c
-server.o: server.c pipe_networking.h parse_data.h
+server.o: server.c pipe_networking.h parse_data.h subserver.h
 	@gcc -c server.c
 pipe_networking.o: pipe_networking.c pipe_networking.h
 	@gcc -c pipe_networking.c

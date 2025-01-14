@@ -1,5 +1,6 @@
 #include "pipe_networking.h"
 #include "parse_data.h"
+#include "game.h"
 
 void send_to_client(int * client, int data) {
 	int send = data;

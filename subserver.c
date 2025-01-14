@@ -21,7 +21,7 @@ int fork_subserver(int **clients, int num_clients) {
             read(subserver2, player2, 2 * sizeof(int));
             int winner[2];
             // play game with player1 and player2
-            play_game(player1, player2, winner);
+            play_game_server(player1, player2, winner);
             write(fds[1], winner, 2 * sizeof(int));
         }
         exit(EXIT_SUCCESS);

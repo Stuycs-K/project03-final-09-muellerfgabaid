@@ -5,7 +5,7 @@ void getInput(int from, int to) {
     int in;
     char input[100];
     printf("Enter your move: (Rock / Paper / Scissors\n)");
-    if (fgets(input, sizeof(input), stdin) == -1) {
+    if (fgets(input, sizeof(input), stdin) == NULL) {
         printf("ERROR\n");
         exit(1);
       }

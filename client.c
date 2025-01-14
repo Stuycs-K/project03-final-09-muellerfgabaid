@@ -1,6 +1,5 @@
 #include "pipe_networking.h"
-#include "parse_data.h"
-#include "game.c"
+#include "game.h"
 
 int main() {
 

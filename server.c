@@ -80,13 +80,15 @@ int main() {
         clients = add_client(clients, &num_clients, &clients_max, to_client,
                              from_client);
 
-        char empty;
-        int bytes = read(STDIN_FILENO, &empty, 1);
+        char buff[100];
+       	fgets(buff, 99, stdin);
+       	/*
         printf("%d\n", bytes);
         if (bytes == -1) {
             printf("%s\n", strerror(errno));
         }
-        if (bytes > 0) {
+        */
+        if (!strcmp(buff, "\n")) {
             printf("Done connecting clients\n");
             break;
         }

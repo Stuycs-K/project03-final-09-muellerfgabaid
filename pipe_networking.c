@@ -21,7 +21,7 @@
 int server_setup() {
   int from_client = 0;
   mkfifo(WKP, 0666);
-  from_client = open(WKP, O_RDONLY);
+  from_client = open(WKP, O_RDONLY | O_NONBLOCK);
   remove(WKP);
   return from_client;
 }

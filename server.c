@@ -1,9 +1,9 @@
 #include "pipe_networking.h"
 #include "subserver.h"
-#include <fcntl.h>
 #include <signal.h>
 #include <stdio.h>
 #include <string.h>
+#include <sys/select.h>
 #include <sys/wait.h>
 #include <unistd.h>
 
@@ -62,33 +62,53 @@ int main() {
     signal(SIGPIPE, SIG_IGN);
     signal(SIGINT, sighandler);
 
-    fcntl(STDIN_FILENO, F_SETFL, fcntl(STDIN_FILENO, F_GETFL) | O_NONBLOCK);
-
     printf("Hit enter to start game\n");
 
     int *clients = malloc(10 * sizeof(int) * 2);
     int num_clients = 0;
     int clients_max = 10;
 
+    int fds[2];
+    pipe(fds);
+    int pid = fork();
+    if (pid == 0) {
+    }
+
     while (1) {
         int from_client = server_setup();
         printf("New player joined\n");
-
         int to_client;
         server_handshake_half(&to_client, from_client);
 
-        clients = add_client(clients, &num_clients, &clients_max, to_client,
-                             from_client);
+        int client[2] = {to_client, from_client};
+        write(fds[1], client, sizeof(int) * 2);
+        exit(0);
 
-        char empty;
-        int bytes = read(STDIN_FILENO, &empty, 1);
-        printf("%d\n", bytes);
-        if (bytes == -1) {
-            printf("%s\n", strerror(errno));
+        fd_set set;
+        FD_ZERO(&set);
+        FD_SET(fds[0], &set);
+        FD_SET(STDIN_FILENO, &set);
+
+        select(fds[0] + 1, &set, NULL, NULL, NULL);
+
+        if (FD_ISSET(fds[0], &set)) {
+            int client[2];
+            read(fds[0], client, sizeof(int) * 2);
+            clients = add_client(clients, &num_clients, &clients_max, client[0],
+                                 client[1]);
         }
-        if (bytes > 0) {
-            printf("Done connecting clients\n");
-            break;
+
+        if (FD_ISSET(STDIN_FILENO, &set)) {
+            char empty;
+            int bytes = read(STDIN_FILENO, &empty, 1);
+            printf("%d\n", bytes);
+            if (bytes == -1) {
+                printf("%s\n", strerror(errno));
+            }
+            if (bytes > 0) {
+                printf("Done connecting clients\n");
+                break;
+            }
         }
     }
 

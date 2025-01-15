@@ -1,9 +1,11 @@
 #include "pipe_networking.h"
 #include "subserver.h"
+#include <fcntl.h>
 #include <signal.h>
+#include <stdio.h>
+#include <string.h>
 #include <sys/wait.h>
 #include <unistd.h>
-#include <fcntl.h>
 
 static void sighandler(int signo) {
     if (signo == SIGINT) {
@@ -43,15 +45,16 @@ void server_handshake_half(int *to_client, int from_client) {
     }
 }
 
-int **add_client(int **clients, int *num_clients, int *clients_max,
-                 int to_client, int from_client) {
+int *add_client(int *clients, int *num_clients, int *clients_max, int to_client,
+                int from_client) {
     if (num_clients >= clients_max) {
-        *clients_max = *clients_max * 2 + 1;
+        *clients_max *= 2;
+        *clients_max += 1;
         clients = realloc(clients, *clients_max * 2 * sizeof(int));
     }
+    clients[*num_clients] = from_client;
+    clients[*num_clients + 1] = to_client;
     *num_clients += 1;
-    clients[*num_clients][0] = from_client;
-    clients[*num_clients][1] = to_client;
     return clients;
 }
 
@@ -63,7 +66,7 @@ int main() {
 
     printf("Hit enter to start game\n");
 
-    int **clients = malloc(10 * sizeof(int) * 2);
+    int *clients = malloc(10 * sizeof(int) * 2);
     int num_clients = 0;
     int clients_max = 10;
 
@@ -78,7 +81,12 @@ int main() {
                              from_client);
 
         char empty;
-        if (read(STDIN_FILENO, &empty, 1) > 0) {
+        int bytes = read(STDIN_FILENO, &empty, 1);
+        printf("%d\n", bytes);
+        if (bytes == -1) {
+            printf("%s\n", strerror(errno));
+        }
+        if (bytes > 0) {
             printf("Done connecting clients\n");
             break;
         }
@@ -88,4 +96,6 @@ int main() {
     int winner[2];
     read(fd, winner, sizeof(int) * 2);
     // the winner is ...
+
+    free(clients);
 }

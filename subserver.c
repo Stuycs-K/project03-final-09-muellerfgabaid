@@ -1,5 +1,6 @@
 #include "subserver.h"
 #include "game.h"
+#include "pipe_networking.h"
 #include <stdlib.h>
 #include <unistd.h>
 
@@ -9,6 +10,10 @@ int fork_subserver(int *clients, int num_clients) {
     pipe(fds);
     int pid = fork();
     if (pid == 0) {
+    	if (num_clients == 0) {
+    		perror("NO CLIENTS CONNECT... EXITING\n");
+    		exit(1);
+    	}
         if (num_clients == 1) {
             write(fds[1], clients, 2 * sizeof(int));
         } else {

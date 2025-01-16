@@ -25,7 +25,7 @@ void play_game_server(int * to_client1, int * to_client2, int * from_client1, in
 
 	int response_1;
 	int bytes = read(*from_client1, &response_1, sizeof(response_1)); // Reads client's choice; Already validated by client
-	printf("%d b: %d,\n%s\n", *from_client1, bytes, strerror(errno));
+	//printf("%d b: %d,\n%s\n", *from_client1, bytes, strerror(errno));
 	if (bytes > 0) {
 		send_to_client(to_client2, USER_TURN);
 		send_to_client(to_client1, OPP_TURN);

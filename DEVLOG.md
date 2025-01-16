@@ -76,3 +76,9 @@ Time: 40 mins
 Fixed an issue where if no clients connect and you try and continue, the server fork bombs
 Tried to fix server connectivity issues on test_server
 Time: 40 mins
+
+### 2025-01-16 - Testing game logic
+Fixed testing server so it runs on 2 client connections
+Found error where server side logic reads bad file descriptors
+Worked on fix by correcting the to and from client file descriptors; still not working
+Time: 40 mins

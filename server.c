@@ -1,3 +1,4 @@
+#include "game.h"
 #include "pipe_networking.h"
 #include "subserver.h"
 #include <signal.h>
@@ -45,15 +46,14 @@ void server_handshake_half(int *to_client, int from_client) {
     }
 }
 
-int *add_client(int *clients, int *num_clients, int *clients_max, int to_client,
-                int from_client) {
+struct client *add_client(struct client *clients, int *num_clients,
+                          int *clients_max, struct client client) {
     if (num_clients >= clients_max) {
         *clients_max *= 2;
         *clients_max += 1;
-        clients = realloc(clients, *clients_max * 2 * sizeof(int));
+        clients = realloc(clients, *clients_max * sizeof(struct client));
     }
-    clients[*num_clients] = from_client;
-    clients[*num_clients + 1] = to_client;
+    clients[*num_clients] = client;
     *num_clients += 1;
     return clients;
 }
@@ -64,7 +64,7 @@ int main() {
 
     printf("Hit enter to start game\n");
 
-    int *clients = malloc(10 * sizeof(int) * 2);
+    struct client *clients = malloc(10 * sizeof(struct client));
     int num_clients = 0;
     int clients_max = 10;
 
@@ -83,8 +83,10 @@ int main() {
             remove(WKP);
             int to_client;
             server_handshake_half(&to_client, from_client);
-            clients = add_client(clients, &num_clients, &clients_max, to_client,
-                                 from_client);
+            struct client client;
+            client.to_client = to_client;
+            client.from_client = from_client;
+            clients = add_client(clients, &num_clients, &clients_max, client);
         }
 
         if (FD_ISSET(STDIN_FILENO, &set)) {
@@ -101,8 +103,8 @@ int main() {
     }
 
     int fd = fork_subserver(clients, num_clients);
-    int winner[2];
-    read(fd, winner, sizeof(int) * 2);
+    struct client winner;
+    read(fd, &winner, sizeof(struct client));
     // the winner is ...
 
     free(clients);

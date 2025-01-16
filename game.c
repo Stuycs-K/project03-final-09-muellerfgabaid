@@ -2,9 +2,9 @@
 #include "parse_data.h"
 #include "game.h"
 
-void send_to_client(int * client, int data) {
+void send_to_client(int client, int data) {
 	int send = data;
-	write(*client, &send, sizeof(send));
+	write(client, &send, sizeof(send));
 }
 
 int get_winner(int r1, int r2) { // Returns 0 for tie, 1 for client 1 win, 2 for client 2 win
@@ -18,38 +18,36 @@ int get_winner(int r1, int r2) { // Returns 0 for tie, 1 for client 1 win, 2 for
 	}
 }
 
-void play_game_server(int * to_client1, int * to_client2, int * from_client1, int * from_client2, int * result) {
-	send_to_client(to_client1, USER_TURN); // Tells client1 that it's its turn
+void play_game_server(struct client * client1, struct client * client2, struct client * result) {
+	send_to_client(client1->to_client, USER_TURN); // Tells client1 that it's its turn
 
-	send_to_client(to_client2, OPP_TURN); // Tells client2 that it is the opponent's turn
+	send_to_client(client2->to_client, OPP_TURN); // Tells client2 that it is the opponent's turn
 
 	int response_1;
-	int bytes = read(*from_client1, &response_1, sizeof(response_1)); // Reads client's choice; Already validated by client
+	int bytes = read(client1->from_client, &response_1, sizeof(response_1)); // Reads client's choice; Already validated by client
 	//printf("%d b: %d,\n%s\n", *from_client1, bytes, strerror(errno));
 	if (bytes > 0) {
-		send_to_client(to_client2, USER_TURN);
-		send_to_client(to_client1, OPP_TURN);
+		send_to_client(client2->to_client, USER_TURN);
+		send_to_client(client1->to_client, OPP_TURN);
 	}
 
 	int response_2;
-	bytes = read(*from_client2, &response_2, sizeof(response_2));
+	bytes = read(client2->from_client, &response_2, sizeof(response_2));
 	
 	if (bytes > 0) {
 		int outcome = get_winner(response_1, response_2);
 		if (outcome == 0) {
-			send_to_client(to_client1, TIE);
-			send_to_client(to_client2, TIE);
-			play_game_server(to_client1, to_client2, from_client1, from_client1, result);
+			send_to_client(client1->to_client, TIE);
+			send_to_client(client2->to_client, TIE);
+			play_game_server(client1, client2, result);
 		} else if (outcome == 1) {
-			send_to_client(to_client1, WIN);
-			send_to_client(to_client2, LOSE);
-			result[0] = to_client1[0];
-			result[1] = to_client1[1];
+			send_to_client(client1->to_client, WIN);
+			send_to_client(client2->to_client, LOSE);
+			result = client1;
 		} else {
-			send_to_client(to_client1, LOSE);
-			send_to_client(to_client2, WIN);
-			result[0] = to_client2[0];
-			result[1] = to_client2[1];
+			send_to_client(client1->to_client, LOSE);
+			send_to_client(client2->to_client, WIN);
+			result = client2;
 		}
 	}
 }

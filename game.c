@@ -87,5 +87,6 @@ void play_game_client(int to_server, int from_server) {
 			printf("You Lose.\n");
 	} else if (data == TIE) {
 			printf("You Tied...\n");
+			play_game_client(to_server, from_server);
 	}
 }

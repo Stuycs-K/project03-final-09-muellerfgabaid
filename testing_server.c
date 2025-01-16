@@ -80,7 +80,7 @@ int main() {
         to_clients[num] = to_client;
         from_clients[num] = from_client;
         num++;
-        close(from_client);
+        //close(from_client);
 
         if (num == 2) {
             printf("Starting game...\n");

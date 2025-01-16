@@ -81,4 +81,5 @@ Time: 40 mins
 Fixed testing server so it runs on 2 client connections
 Found error where server side logic reads bad file descriptors
 Worked on fix by correcting the to and from client file descriptors; still not working
-Time: 40 mins
+-Update: Fixed the problem: the from_client file descriptor was being closed too early
+Time: 50 mins

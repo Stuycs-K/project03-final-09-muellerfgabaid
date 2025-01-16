@@ -87,4 +87,5 @@ Fixed testing server so it runs on 2 client connections
 Found error where server side logic reads bad file descriptors
 Worked on fix by correcting the to and from client file descriptors; still not working
 -Update: Fixed the problem: the from_client file descriptor was being closed too early
-Time: 50 mins
+Updated game functions to use structs
+Time: 1.5hrs

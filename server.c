@@ -68,40 +68,28 @@ int main() {
     int num_clients = 0;
     int clients_max = 10;
 
-    int fds[2];
-    pipe(fds);
-    int pid = fork();
-    if (pid == 0) {
-    }
-
     while (1) {
         int from_client = server_setup();
-        printf("New player joined\n");
-        int to_client;
-        server_handshake_half(&to_client, from_client);
-
-        int client[2] = {to_client, from_client};
-        write(fds[1], client, sizeof(int) * 2);
-        exit(0);
 
         fd_set set;
         FD_ZERO(&set);
-        FD_SET(fds[0], &set);
+        FD_SET(from_client, &set);
         FD_SET(STDIN_FILENO, &set);
 
-        select(fds[0] + 1, &set, NULL, NULL, NULL);
+        select(from_client + 1, &set, NULL, NULL, NULL);
 
-        if (FD_ISSET(fds[0], &set)) {
-            int client[2];
-            read(fds[0], client, sizeof(int) * 2);
-            clients = add_client(clients, &num_clients, &clients_max, client[0],
-                                 client[1]);
+        if (FD_ISSET(from_client, &set)) {
+            printf("New player joined\n");
+            remove(WKP);
+            int to_client;
+            server_handshake_half(&to_client, from_client);
+            clients = add_client(clients, &num_clients, &clients_max, to_client,
+                                 from_client);
         }
 
         if (FD_ISSET(STDIN_FILENO, &set)) {
             char empty;
             int bytes = read(STDIN_FILENO, &empty, 1);
-            printf("%d\n", bytes);
             if (bytes == -1) {
                 printf("%s\n", strerror(errno));
             }
@@ -118,4 +106,5 @@ int main() {
     // the winner is ...
 
     free(clients);
+    remove(WKP);
 }

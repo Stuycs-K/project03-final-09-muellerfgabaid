@@ -19,6 +19,6 @@
 #define READ 0
 #define WRITE 1
 
-
+#define NEW_CONNECT 1
 
 #endif

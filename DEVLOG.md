@@ -89,3 +89,8 @@ Worked on fix by correcting the to and from client file descriptors; still not w
 -Update: Fixed the problem: the from_client file descriptor was being closed too early
 Updated game functions to use structs
 Time: 1.5hrs
+
+### 2025-01-17 - Added usernames and fixed bugs
+Wrote function to get user input for each client's username
+Fixed bug where subserver incorrectly writes client data, due to errors in pointer math
+Time: 40 mins

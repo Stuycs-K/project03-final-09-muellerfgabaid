@@ -88,3 +88,15 @@ void play_game_client(int to_server, int from_server) {
 			play_game_client(to_server, from_server);
 	}
 }
+
+void get_username(struct client * client) {
+	char buffer[100];
+	printf("Enter your username:\n");
+	fgets(buffer, sizeof(buffer)-1, stdin);
+	if (!strcmp(buffer, "")) {
+		printf("Invalid Username\n");
+		get_username(client);
+	} else {
+		strcpy(client->user, buffer);
+	}
+}

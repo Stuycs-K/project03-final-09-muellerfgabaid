@@ -90,7 +90,9 @@ Worked on fix by correcting the to and from client file descriptors; still not w
 Updated game functions to use structs
 Time: 1.5hrs
 
-### 2025-01-17 - Added usernames and fixed bugs
+### 2025-01-17 - Added usernames and fixed bugs; Made clients reconnect
 Wrote function to get user input for each client's username
 Fixed bug where subserver incorrectly writes client data, due to errors in pointer math
-Time: 40 mins
+Wrote reconnect function that makes the winning client stay open for the new connection
+Updated server and client logic to use the new reconnect feature
+Time: 1.5hrs

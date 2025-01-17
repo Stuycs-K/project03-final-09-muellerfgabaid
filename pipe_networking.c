@@ -43,7 +43,7 @@ int server_handshake(int *to_client) {
         printf("SYN READ FAIL\n");
         exit(1);
     } else {
-        printf("[SYN READ]: %s\n", clientPipe);
+        //printf("[SYN READ]: %s\n", clientPipe);
     }
 
     *to_client = open(clientPipe, O_WRONLY);
@@ -58,7 +58,7 @@ int server_handshake(int *to_client) {
         printf("SYN_ACK SEND FAIL\n");
         exit(1);
     } else {
-        printf("[SYN_ACK SENT]: %d\n", syn_ack);
+        //printf("[SYN_ACK SENT]: %d\n", syn_ack);
     }
 
     int ack;
@@ -66,7 +66,7 @@ int server_handshake(int *to_client) {
         printf("ACK READ FAIL\n");
         exit(1);
     } else {
-        printf("[ACK READ]: %d\n", ack);
+        //printf("[ACK READ]: %d\n", ack);
     }
 
     if (ack != syn_ack + 1) {
@@ -100,7 +100,7 @@ int client_handshake(int *to_server) {
         remove(pidPipe);
         exit(1);
     } else {
-        printf("[SYN SENT]: %d\n", pid);
+        //printf("[SYN SENT]: %d\n", pid);
     }
 
     from_server = open(pidPipe, O_RDONLY);
@@ -110,7 +110,7 @@ int client_handshake(int *to_server) {
         remove(pidPipe);
         exit(1);
     } else {
-        printf("[SYN_ACK READ]: %d\n", syn_ack);
+        //printf("[SYN_ACK READ]: %d\n", syn_ack);
         remove(pidPipe);
     }
 
@@ -119,7 +119,7 @@ int client_handshake(int *to_server) {
         printf("ACK SEND FAIL\n");
         exit(1);
     } else {
-        printf("[ACK SENT]: %d\n", ack);
+        //printf("[ACK SENT]: %d\n", ack);
     }
 
     remove(pidPipe);

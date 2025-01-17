@@ -79,14 +79,15 @@ int main() {
         select(from_client + 1, &set, NULL, NULL, NULL);
 
         if (FD_ISSET(from_client, &set)) {
-            printf("New player joined\n");
             remove(WKP);
             int to_client;
             server_handshake_half(&to_client, from_client);
             struct client client;
             client.to_client = to_client;
             client.from_client = from_client;
+            read(from_client, client.user, MAX_USERNAME);
             clients = add_client(clients, &num_clients, &clients_max, client);
+            printf("%s joined\n", client.user);
         }
 
         if (FD_ISSET(STDIN_FILENO, &set)) {
@@ -105,7 +106,8 @@ int main() {
     int fd = fork_subserver(clients, num_clients);
     struct client winner;
     read(fd, &winner, sizeof(struct client));
-    // the winner is ...
+
+    printf("%s won the whole tournament!!!!\n", winner.user);
 
     free(clients);
     remove(WKP);

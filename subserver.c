@@ -28,8 +28,10 @@ int fork_subserver(struct client *clients, int num_clients) {
             read(subserver2, &player2, sizeof(struct client));
             struct client winner;
             // play game with player1 and player2
+            printf("Starting game between %s and %s\n", player1.user, player2.user);
             play_game_server(&player1, &player2, &winner);
             send_to_client(winner.to_client, NEW_CONNECT);
+            printf("%s won!\n", winner.user);
             write(fds[1], &winner, sizeof(struct client));
         }
         exit(EXIT_SUCCESS);

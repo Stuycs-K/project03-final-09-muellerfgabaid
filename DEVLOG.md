@@ -37,6 +37,15 @@ Server can't both open WKP and read from input at same time
 Select can't be used
 40 minutes
 
+### 2024-01-16 - Used select for stdin and clients
+Implemented select for communication with stdin and players
+40 minutes
+
+### 2024-01-17 - Fixed bracketing and added status prints
+Bracket works with multiple players
+Prints when players start games and win/lose
+40 minutes
+
 
 ## Daniel Gabai
 

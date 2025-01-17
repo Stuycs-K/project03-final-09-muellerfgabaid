@@ -85,7 +85,7 @@ int main() {
         if (num == 2) {
             printf("Starting game...\n");
             int result;
-            play_game_server(&to_clients[0], &to_clients[1], &from_clients[0], &from_clients[1], &result);
+            //play_game_server(&to_clients[0], &to_clients[1], &from_clients[0], &from_clients[1], &result);
             printf("Res: %d\n", result);
             //close(clients[0]);
             //close(clients[1]);

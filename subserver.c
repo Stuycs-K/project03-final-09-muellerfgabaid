@@ -19,7 +19,7 @@ int fork_subserver(struct client *clients, int num_clients) {
         } else {
             int subserver1 = fork_subserver(clients, num_clients / 2);
             int subserver2 =
-                fork_subserver(clients + (num_clients / 2) * sizeof(struct client),
+                fork_subserver(clients + (num_clients / 2),
                                num_clients - num_clients / 2);
             struct client player1;
             struct client player2;

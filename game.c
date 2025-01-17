@@ -81,6 +81,7 @@ void play_game_client(int to_server, int from_server) {
 		play_game_client(to_server, from_server);
 	} else if (data == WIN) {
 			printf("You Win!\n");
+			reconnect_client(to_server, from_server);
 	} else if (data == LOSE) {
 			printf("You Lose.\n");
 	} else if (data == TIE) {
@@ -89,11 +90,19 @@ void play_game_client(int to_server, int from_server) {
 	}
 }
 
+void reconnect_client(int to_server, int from_server) {
+	int data = 0;
+	read(from_server, &data, sizeof(data));
+	if (data == NEW_CONNECT) {
+		play_game_client(to_server, from_server);
+	}
+}
+
 void get_username(struct client * client) {
 	char buffer[100];
 	printf("Enter your username:\n");
 	fgets(buffer, sizeof(buffer)-1, stdin);
-	if (!strcmp(buffer, "")) {
+	if (!strcmp(buffer, "\n")) {
 		printf("Invalid Username\n");
 		get_username(client);
 	} else {

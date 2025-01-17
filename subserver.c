@@ -1,6 +1,7 @@
 #include "subserver.h"
 #include "game.h"
 #include "pipe_networking.h"
+#include "parse_data.h"
 #include <stdlib.h>
 #include <unistd.h>
 
@@ -28,6 +29,7 @@ int fork_subserver(struct client *clients, int num_clients) {
             struct client winner;
             // play game with player1 and player2
             play_game_server(&player1, &player2, &winner);
+            send_to_client(winner.to_client, NEW_CONNECT);
             write(fds[1], &winner, sizeof(struct client));
         }
         exit(EXIT_SUCCESS);

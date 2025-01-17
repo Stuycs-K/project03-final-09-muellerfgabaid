@@ -1,9 +1,10 @@
+#include "game.h"
 #include "pipe_networking.h"
 #include "subserver.h"
-#include <fcntl.h>
 #include <signal.h>
 #include <stdio.h>
 #include <string.h>
+#include <sys/select.h>
 #include <sys/wait.h>
 #include <unistd.h>
 
@@ -45,15 +46,14 @@ void server_handshake_half(int *to_client, int from_client) {
     }
 }
 
-int *add_client(int *clients, int *num_clients, int *clients_max, int to_client,
-                int from_client) {
+struct client *add_client(struct client *clients, int *num_clients,
+                          int *clients_max, struct client client) {
     if (num_clients >= clients_max) {
         *clients_max *= 2;
         *clients_max += 1;
-        clients = realloc(clients, *clients_max * 2 * sizeof(int));
+        clients = realloc(clients, *clients_max * sizeof(struct client));
     }
-    clients[*num_clients] = from_client;
-    clients[*num_clients + 1] = to_client;
+    clients[*num_clients] = client;
     *num_clients += 1;
     return clients;
 }
@@ -62,42 +62,51 @@ int main() {
     signal(SIGPIPE, SIG_IGN);
     signal(SIGINT, sighandler);
 
-    fcntl(STDIN_FILENO, F_SETFL, fcntl(STDIN_FILENO, F_GETFL) | O_NONBLOCK);
-
     printf("Hit enter to start game\n");
 
-    int *clients = malloc(10 * sizeof(int) * 2);
+    struct client *clients = malloc(10 * sizeof(struct client));
     int num_clients = 0;
     int clients_max = 10;
 
     while (1) {
         int from_client = server_setup();
-        printf("New player joined\n");
 
-        int to_client;
-        server_handshake_half(&to_client, from_client);
+        fd_set set;
+        FD_ZERO(&set);
+        FD_SET(from_client, &set);
+        FD_SET(STDIN_FILENO, &set);
 
-        clients = add_client(clients, &num_clients, &clients_max, to_client,
-                             from_client);
+        select(from_client + 1, &set, NULL, NULL, NULL);
 
-        char buff[100];
-       	fgets(buff, 99, stdin);
-       	/*
-        printf("%d\n", bytes);
-        if (bytes == -1) {
-            printf("%s\n", strerror(errno));
+        if (FD_ISSET(from_client, &set)) {
+            printf("New player joined\n");
+            remove(WKP);
+            int to_client;
+            server_handshake_half(&to_client, from_client);
+            struct client client;
+            client.to_client = to_client;
+            client.from_client = from_client;
+            clients = add_client(clients, &num_clients, &clients_max, client);
         }
-        */
-        if (!strcmp(buff, "\n")) {
-            printf("Done connecting clients\n");
-            break;
+
+        if (FD_ISSET(STDIN_FILENO, &set)) {
+            char empty;
+            int bytes = read(STDIN_FILENO, &empty, 1);
+            if (bytes == -1) {
+                printf("%s\n", strerror(errno));
+            }
+            if (bytes > 0) {
+                printf("Done connecting clients\n");
+                break;
+            }
         }
     }
 
     int fd = fork_subserver(clients, num_clients);
-    int winner[2];
-    read(fd, winner, sizeof(int) * 2);
+    struct client winner;
+    read(fd, &winner, sizeof(struct client));
     // the winner is ...
 
     free(clients);
+    remove(WKP);
 }

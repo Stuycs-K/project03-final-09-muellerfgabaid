@@ -32,6 +32,11 @@ Fixed some include bugs
 Started testing server and need to find a solution for reading
 40 minutes
 
+### 2024-01-15 - Started fixing server
+Server can't both open WKP and read from input at same time
+Select can't be used
+40 minutes
+
 
 ## Daniel Gabai
 
@@ -82,4 +87,5 @@ Fixed testing server so it runs on 2 client connections
 Found error where server side logic reads bad file descriptors
 Worked on fix by correcting the to and from client file descriptors; still not working
 -Update: Fixed the problem: the from_client file descriptor was being closed too early
-Time: 50 mins
+Updated game functions to use structs
+Time: 1.5hrs

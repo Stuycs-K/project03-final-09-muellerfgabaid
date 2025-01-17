@@ -11,4 +11,5 @@ void play_game_server(struct client * client1, struct client * client2, struct c
 int get_user_turn();
 void play_game_client(int to_server, int from_server);
 void get_username(struct client * client);
+void reconnect_client(int to_server, int from_server);
 #endif

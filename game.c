@@ -1,6 +1,7 @@
 #include "game.h"
 #include "parse_data.h"
 #include "pipe_networking.h"
+#include <string.h>
 
 void send_to_client(int client, int data) {
     int send = data;
@@ -51,11 +52,11 @@ void play_game_server(struct client *client1, struct client *client2,
         } else if (outcome == 1) {
             send_to_client(client1->to_client, WIN);
             send_to_client(client2->to_client, LOSE);
-            result = client1;
+            *result = *client1;
         } else {
             send_to_client(client1->to_client, LOSE);
             send_to_client(client2->to_client, WIN);
-            result = client2;
+            *result = *client2;
         }
     }
 }
@@ -80,30 +81,30 @@ void play_game_client(int to_server, int from_server) {
     int data = 0;
     read(from_server, &data, sizeof(data));
 
-	if (data == USER_TURN) {
-		int turn = get_user_turn();
-		write(to_server, &turn, sizeof(turn));
-		play_game_client(to_server, from_server);
-	} else if (data == OPP_TURN){
-		printf("Waiting for opponent...\n");
-		play_game_client(to_server, from_server);
-	} else if (data == WIN) {
-			printf("You Win!\n");
-			reconnect_client(to_server, from_server);
-	} else if (data == LOSE) {
-			printf("You Lose.\n");
-	} else if (data == TIE) {
-			printf("You Tied...\n");
-			play_game_client(to_server, from_server);
-	}
+    if (data == USER_TURN) {
+        int turn = get_user_turn();
+        write(to_server, &turn, sizeof(turn));
+        play_game_client(to_server, from_server);
+    } else if (data == OPP_TURN) {
+        printf("Waiting for opponent...\n");
+        play_game_client(to_server, from_server);
+    } else if (data == WIN) {
+        printf("You Win!\n");
+        reconnect_client(to_server, from_server);
+    } else if (data == LOSE) {
+        printf("You Lose.\n");
+    } else if (data == TIE) {
+        printf("You Tied...\n");
+        play_game_client(to_server, from_server);
+    }
 }
 
 void reconnect_client(int to_server, int from_server) {
-	int data = 0;
-	read(from_server, &data, sizeof(data));
-	if (data == NEW_CONNECT) {
-		play_game_client(to_server, from_server);
-	}
+    int data = 0;
+    read(from_server, &data, sizeof(data));
+    if (data == NEW_CONNECT) {
+        play_game_client(to_server, from_server);
+    }
 }
 
 void get_username(char *username, int n) {
@@ -113,4 +114,5 @@ void get_username(char *username, int n) {
         printf("Invalid Username\n");
         get_username(username, n);
     }
+    *strchr(username, '\n') = '\0';
 }

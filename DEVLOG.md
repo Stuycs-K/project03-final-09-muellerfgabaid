@@ -46,6 +46,11 @@ Bracket works with multiple players
 Prints when players start games and win/lose
 40 minutes
 
+### 2024-01-19 - Multiple enter usernames
+Multiple clients connected can enter usernames at the same time
+The server used to block when one client was entering their username
+80 minutes
+
 
 ## Daniel Gabai
 

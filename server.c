@@ -58,25 +58,51 @@ struct client *add_client(struct client *clients, int *num_clients,
     return clients;
 }
 
+struct client *add_client_user(struct client *clients, int *num_clients,
+                          int *clients_max, struct client client) {
+    if (num_clients >= clients_max) {
+        *clients_max *= 2;
+        *clients_max += 1;
+        clients = realloc(clients, *clients_max * sizeof(struct client));
+    }
+    clients[*num_clients] = client;
+    *num_clients += 1;
+    return clients;
+}
+
+void remove_client_user(struct client *clients, int *num_clients, int index) {
+    clients[index] = clients[*num_clients - 1];
+    *num_clients -= 1;
+}
+
 int main() {
     signal(SIGPIPE, SIG_IGN);
     signal(SIGINT, sighandler);
 
-    printf("Hit enter to start game\n");
+    printf("Hit enter to start tournament\n");
 
     struct client *clients = malloc(10 * sizeof(struct client));
     int num_clients = 0;
     int clients_max = 10;
 
-    while (1) {
-        int from_client = server_setup();
+    struct client *clients_user = malloc(10 * sizeof(struct client *));
+    int num_clients_user = 0;
+    int clients_max_user = 10;
 
+    int from_client = server_setup();
+    int max = from_client;
+
+    while (1) {
         fd_set set;
         FD_ZERO(&set);
         FD_SET(from_client, &set);
         FD_SET(STDIN_FILENO, &set);
 
-        select(from_client + 1, &set, NULL, NULL, NULL);
+        for (int i = 0; i < num_clients_user; i++) {
+            FD_SET(clients_user[i].from_client, &set);
+        }
+
+        select(max + 1, &set, NULL, NULL, NULL);
 
         if (FD_ISSET(from_client, &set)) {
             remove(WKP);
@@ -85,12 +111,13 @@ int main() {
             struct client client;
             client.to_client = to_client;
             client.from_client = from_client;
-            read(from_client, client.user, MAX_USERNAME);
-            clients = add_client(clients, &num_clients, &clients_max, client);
-            printf("%s joined\n", client.user);
-        }
+            clients_user = add_client_user(clients_user, &num_clients_user, &clients_max_user, client);
 
-        if (FD_ISSET(STDIN_FILENO, &set)) {
+            from_client = server_setup();
+            if (from_client > max) {
+                max = from_client;
+            }
+        } else if (FD_ISSET(STDIN_FILENO, &set)) {
             char empty;
             int bytes = read(STDIN_FILENO, &empty, 1);
             if (bytes == -1) {
@@ -100,6 +127,18 @@ int main() {
                 printf("Done connecting clients\n");
                 break;
             }
+        } else {
+            struct client client;
+            for (int i = 0; i < num_clients_user; i++) {
+                if (FD_ISSET(clients_user[i].from_client, &set)) {
+                    client = clients_user[i];
+                    remove_client_user(clients_user, &num_clients_user, i);
+                    break;
+                }
+            }
+            read(client.from_client, client.user, MAX_USERNAME);
+            clients = add_client(clients, &num_clients, &clients_max, client);
+            printf("%s joined\n", client.user);
         }
     }
 

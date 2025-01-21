@@ -19,4 +19,4 @@ Clients will need to enter a username and then wait for the server to start the 
 To play the game, follow the printed instructions in the terminal windows for both the server and clients
 
 ### Video:
-[https://bit.ly/systemsfinal]
+https://bit.ly/systemsfinal

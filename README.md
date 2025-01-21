@@ -17,3 +17,6 @@ If there is an odd number of players, some players will be given a bye to the ne
 First run the server, then run the clients
 Clients will need to enter a username and then wait for the server to start the game by hitting enter
 To play the game, follow the printed instructions in the terminal windows for both the server and clients
+
+### Video:
+[https://bit.ly/systemsfinal]

@@ -11,13 +11,13 @@ void send_to_client(int client, int data) {
 int get_winner(
     int r1,
     int r2) { // Returns 0 for tie, 1 for client 1 win, 2 for client 2 win
-    int offset = (r1 + 1) % 3;
-    if (offset == r2) {
-        return 2;
-    } else if (offset == r2 + 1) {
-        return 0;
+    if (r1 == r2) {
+        return 0; // Tie
+    }
+    if ((r1 + 1) % 3 == r2) {
+        return 2; // Client 2 wins
     } else {
-        return 1;
+        return 1; // Client 1 wins
     }
 }
 
@@ -114,5 +114,8 @@ void get_username(char *username, int n) {
         printf("Invalid Username\n");
         get_username(username, n);
     }
-    *strchr(username, '\n') = '\0';
+    char * rem = strchr(username, '\n');
+    if (rem) {
+        *rem = '\0';
+    }
 }

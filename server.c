@@ -148,6 +148,6 @@ int main() {
 
     printf("%s won the whole tournament!!!!\n", winner.user);
 
-    free(clients);
+    //free(clients);
     remove(WKP);
 }

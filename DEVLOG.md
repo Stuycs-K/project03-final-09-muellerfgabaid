@@ -110,3 +110,9 @@ Fixed bug where subserver incorrectly writes client data, due to errors in point
 Wrote reconnect function that makes the winning client stay open for the new connection
 Updated server and client logic to use the new reconnect feature
 Time: 1.5hrs
+
+### 2025-01-20 - Final Bug Fixes
+Fixed issue where invalid usernames would create segfaults
+Fixed issue where if both clients typed scissors then it would not result in a tie
+General testing of code
+Time: 35mins
